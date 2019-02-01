@@ -1,0 +1,4 @@
+#import <Foundation/Foundation.h>
+
+struct User { char name[32]; int num; float timeIn;
+};

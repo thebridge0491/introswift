@@ -1,0 +1,9 @@
+module classic_c {
+    header "shim.h"
+    link "intro_c-practice"
+    export *
+}
+
+// when compiling:  -Xcc -fmodule-map-file=<path>/module.modulemap
+// when linking package, if dynamic library not in system path:
+//   -Xcc -I$(PREFIX)/include -Xlinker -rpath -Xlinker $(PREFIX)/lib -Xlinker -L$(PREFIX)/lib

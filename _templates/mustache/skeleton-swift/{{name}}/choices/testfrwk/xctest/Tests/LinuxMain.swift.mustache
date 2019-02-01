@@ -1,0 +1,7 @@
+import XCTest
+@testable import {{parentcap}}{{^parentcap}}Introswift{{/parentcap}}{{joiner}}{{^joiner}}_{{/joiner}}{{projectcap}}{{^projectcap}}Util{{/projectcap}}Tests
+
+XCTMain([
+    testCase(NewCases.allTests), testCase(NewProps.allTests)
+    //, testCase(ClassicCases.allTests), testCase(ClassicProps.allTests)
+])

@@ -1,0 +1,103 @@
+import Foundation
+
+import Yaml
+import Yams
+
+import class {{parentcap}}{{^parentcap}}Introswift{{/parentcap}}{{joiner}}{{^joiner}}_{{/joiner}}{{projectcap}}{{^projectcap}}Util{{/projectcap}}.{{projectcap}}{{^projectcap}}Util{{/projectcap}}
+
+/** Run method.
+
+ - todo: complete function
+ - author: {{author}}{{^author}}{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}{{/author}}
+ - version: {{version}}{{^version}}0.1.0{{/version}}
+
+// - parameter progname: program name
+ - parameters:
+    - progname: program name
+    - name: user's name
+
+ - returns: n/a */
+func run{{projectcap}}{{^projectcap}}Util{{/projectcap}}(_ progname:String, _ name:String) {
+    do {
+        let re = try NSRegularExpression(pattern:"^(?i)quit$",
+			options: NSRegularExpression.Options.init(rawValue:0))
+        let match = re.firstMatch(in:name, options:
+			NSRegularExpression.MatchingOptions.init(rawValue:0),
+			range: NSMakeRange(0, name.lengthOfBytes(
+			using:String.Encoding.utf8)))
+        print("\(match != nil ? "Good" : "Does not") match: \(name) to " +
+			"\(re.pattern)")
+    } catch let error {
+        print(error.localizedDescription)
+    }
+}
+
+func printUsage(_ progname:String) {
+    print("Usage: \(progname) [-u USER][-?|-h]")
+}
+
+func parseCmdopts(_ argv:Array<String>) -> Dictionary<String, Any> {
+    let options = UserDefaults.standard
+    options.register(defaults: ["u":"World"])
+    NSLog("info [\(#function):\(#line)] - parse_cmdopts:argv:")
+
+    var (i, opts) = (0, options.dictionaryRepresentation())
+    while i < argv.count {
+        let str = argv[i].trimmingCharacters(in:CharacterSet(charactersIn:
+			"- \n") as CharacterSet)
+        switch (str.first! as Character) {
+        case "u":
+			opts["u"] = argv[i + 1] ; i = i + 1
+        case "h":
+            printUsage(argv[0])
+            exit(0) //Thread.exit()
+            break
+
+        default:
+            break
+        }
+        i = i + 1
+    }
+    return opts
+}
+
+public func main() {
+	let argv = CommandLine.arguments
+	//let rsrcPath = "\(FileManager.default.currentDirectoryPath)/Resources"
+	let rsrcPath = ProcessInfo.processInfo.environment["RSRC_PATH"] ?? "Resources"
+    let options = parseCmdopts(argv)
+    var tupArr:[[String]] = []
+
+    if let jsonDict = try! {{projectcap}}{{^projectcap}}Util{{/projectcap}}.readJSONObject(
+			{{projectcap}}{{^projectcap}}Util{{/projectcap}}.getTextFmFile("\(rsrcPath)/prac.json") ?? "{}") as? [String: Any] {
+		var user1Dict = jsonDict["user1", default:["name": "???"]] as! [String: Any?]
+		tupArr += [["\(jsonDict)"
+		    , "\(jsonDict["domain", default:"???"] as! String)",
+			"\(user1Dict["name"] as! String)"]]
+	}
+
+	if let yamlDict = try? Yaml.load(
+			{{projectcap}}{{^projectcap}}Util{{/projectcap}}.getTextFmFile("\(rsrcPath)/prac.yaml") ?? "") {
+	    var user1Dict = yamlDict["user1"] ?? ["name": "???"]
+	    tupArr += [["\(yamlDict.dictionary ?? [:])"
+	        , "\(nil != yamlDict.dictionary ? yamlDict["domain"].string! : "???")",
+			"\(nil != user1Dict.dictionary ? user1Dict["name"].string! : "???")"]]
+	}
+	if let yamlDict1 = try! Yams.load(yaml:
+			{{projectcap}}{{^projectcap}}Util{{/projectcap}}.getTextFmFile("\(rsrcPath)/prac.yaml") ?? "") as? [String: Any] {
+	    var user1Dict = yamlDict1["user1", default:["name": "???"]] as! [String: Any?]
+	    tupArr += [["\(yamlDict1)"
+	        , "\(yamlDict1["domain", default:"???"] as! String)",
+			"\(user1Dict["name"] as! String)"]]
+	}
+
+	for elem in tupArr {
+		print("\nconfig: \(elem[0])")
+		print("domain: \(elem[1])")
+		print("user1Name: \(elem[2])")
+	}
+
+    run{{projectcap}}{{^projectcap}}Util{{/projectcap}}(argv[0], "\(options["u"]!)")
+}
+
+main()

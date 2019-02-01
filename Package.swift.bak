@@ -1,0 +1,56 @@
+// swift-tools-version:4.2
+
+import PackageDescription
+
+func targetDepn(_ name:String) -> Target.Dependency {
+    //return Target.Dependency.target(name: name)
+    return Target.Dependency(stringLiteral: name)
+}
+let (parent) = ("Introswift")
+let (parentlwr) = ("introswift")
+
+let package = Package(
+    name: "\(parent)",
+    products: [
+        .library(name: "\(parent)_Util"
+            , type: .static // [.dynamic | .static]
+            , targets: ["\(parent)_Util"])
+        , .library(name: "\(parent)_Intro"
+            , type: .static // [.dynamic | .static]
+            , targets: ["\(parent)_Intro"])
+        , .executable(name: "\(parent)_IntroMain"
+            , targets: ["\(parent)_IntroMain"])
+    ],
+    dependencies: [
+        //.package(url: /* package url */, from: "1.0.0"),
+	    .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.7.0"),
+	    //.package(url: "\(parentlwr)_util", .branch("master")),
+	    //.package(path: "\(parentlwr)_util")
+    ],
+    targets: [
+        .target(
+            name: "\(parent)_Util"
+            , dependencies: []
+            , path: "\(parentlwr)_util/Sources/\(parent)/Util")
+        , .target(
+            name: "\(parent)_Intro"
+            , dependencies: []
+            , path: "\(parentlwr)_intro/Sources/\(parent)/Intro")
+        , .target(
+            name: "\(parent)_IntroMain"
+            , dependencies: ["Yaml", "Yams", targetDepn("\(parent)_Intro")]
+            , path: "\(parentlwr)_intro/Sources/\(parent)/Main"
+        )
+        /*, .testTarget(
+            name: "\(parent)_UtilTests"
+            , dependencies: ["SwiftCheck", targetDepn("\(parent)_Util")]
+            , path: "\(parentlwr)_util/Tests/\(parent)/UtilTests"
+            , exclude: ["ClassicCases.swift", "ClassicProps.swift"])
+        , .testTarget(
+            name: "\(parent)_IntroTests"
+            , dependencies: ["SwiftCheck", targetDepn("\(parent)_Intro")]
+            , path: "\(parentlwr)_intro/Tests/\(parent)/IntroTests"
+            , exclude: ["ClassicCases.swift", "ClassicProps.swift"]
+        )*/
+    ]
+)
