@@ -1,4 +1,5 @@
 import XCTest
+import class Introswift_Util.Util
 @testable import class Introswift_Intro.Intro
 
 class NewCases: XCTestCase {
@@ -13,20 +14,13 @@ class NewCases: XCTestCase {
         super.tearDown()
     }
 
-    func inEpsilon(_ a: Float, _ b: Float, _ tolerance: Float = 0.001) ->
-            Bool {
-	    let delta = abs(tolerance)
-	    //return (a - delta) <= b && (a + delta) >= b
-	    return !((a + delta) < b) && !((b + delta) < a)
-	}
-
     func testMethod1() {
     	XCTAssertEqual(4, 2 * 2)
     }
 
     func testDblMethod() {
     	//XCTAssertEqual(4.0, 4.0, accuracy: self.epsilon * 4.0)
-    	XCTAssert(self.inEpsilon(4.0, 4.0, self.epsilon * 4.0))
+    	XCTAssert(Util.inEpsilon(4.0, 4.0, self.epsilon * 4.0))
     }
 
     func testStrMethod() {

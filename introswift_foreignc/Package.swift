@@ -6,7 +6,7 @@ func targetDepn(_ name:String) -> Target.Dependency {
     //return Target.Dependency.target(name: name)
     return Target.Dependency(stringLiteral: name)
 }
-let (parent, mod) = ("Introswift", "Util")
+let (parent, mod) = ("Introswift", "Foreignc")
 
 let package = Package(
     name: "\(parent)_\(mod)",
@@ -19,7 +19,7 @@ let package = Package(
         //.package(url: /* package url */, from: "1.0.0"),
 	    .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.7.0"),
 	    //.package(url: "../introswift_util", .branch("master")),
-	    //.package(path: "../introswift_util")
+	    .package(path: "../introswift_util")
     ],
     targets: [
         .target(
@@ -28,7 +28,8 @@ let package = Package(
             , path: "Sources/\(parent)/\(mod)")
         , .testTarget(
             name: "\(parent)_\(mod)Tests"
-            , dependencies: ["SwiftCheck", targetDepn("\(parent)_\(mod)")]
+            , dependencies: ["SwiftCheck", targetDepn("\(parent)_Util")
+                , targetDepn("\(parent)_\(mod)")]
             , path: "Tests/\(parent)/\(mod)Tests"
         )
     ]

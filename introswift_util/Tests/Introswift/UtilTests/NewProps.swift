@@ -14,13 +14,6 @@ class NewProps: XCTestCase {
         super.tearDown()
     }
 
-    func inEpsilon(_ a: Float, _ b: Float, _ tolerance: Float = 0.001) ->
-            Bool {
-	    let delta = abs(tolerance)
-	    //return (a - delta) <= b && (a + delta) >= b
-	    return !((a + delta) < b) && !((b + delta) < a)
-	}
-
     func testPropCommutAdd() {
     	property("prop (commutative) a + b == b + a") <- forAll {
     			(a: Int, b: Int) in
@@ -32,7 +25,7 @@ class NewProps: XCTestCase {
     	property("prop (associative) (a + b) + c == a + (b + c)") <- forAll {
     			(a: Float, b: Float, c: Float) in
     		let res = (a + b) + c
-        	return self.inEpsilon(res, a + (b + c), self.epsilon * abs(res))
+        	return Util.inEpsilon(res, a + (b + c), self.epsilon * abs(res))
         }
     }
 

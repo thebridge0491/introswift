@@ -6,7 +6,7 @@ help:
 
 parent = Introswift
 BUILD_PATH ?= $(shell pwd)/.build
-SUBDIRS = introswift_util introswift_intro
+SUBDIRS = introswift_util introswift_foreignc introswift_practice introswift_intro
 CONFIG ?= release
 
 .PHONY: build testCompile help clean clobber test

@@ -23,7 +23,8 @@ let package = Package(
 	    .package(url: "https://github.com/behrang/YamlSwift.git", from: "3.0.0"),
 	    .package(url: "https://github.com/jpsim/Yams.git", from: "0.3.6"),
 	    //.package(url: "../introswift_util", .branch("master")),
-	    //.package(path: "../introswift_util")
+	    .package(path: "../introswift_util"),
+	    .package(path: "../introswift_practice")
     ],
     targets: [
         .target(
@@ -32,13 +33,15 @@ let package = Package(
             , path: "Sources/\(parent)/\(mod)")
         , .target(
             name: "\(parent)_\(mod)Main"
-            , dependencies: ["Yaml", "Yams", targetDepn("\(parent)_\(mod)")]
+            , dependencies: ["Yaml", "Yams", targetDepn("\(parent)_Util")
+                , targetDepn("\(parent)_Practice")
+                , targetDepn("\(parent)_\(mod)")]
             , path: "Sources/\(parent)/Main")
         , .testTarget(
             name: "\(parent)_\(mod)Tests"
-            , dependencies: ["SwiftCheck", targetDepn("\(parent)_\(mod)")]
+            , dependencies: ["SwiftCheck", targetDepn("\(parent)_Util")
+                , targetDepn("\(parent)_\(mod)")]
             , path: "Tests/\(parent)/\(mod)Tests"
-            , exclude: ["ClassicCases.swift", "ClassicProps.swift"]
         )
     ]
 )

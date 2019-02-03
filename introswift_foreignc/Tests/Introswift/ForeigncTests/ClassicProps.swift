@@ -1,6 +1,7 @@
 import XCTest
 import SwiftCheck
-@testable import class Introswift_Intro.Classic
+import class Introswift_Util.Util
+@testable import class Introswift_Foreignc.Classic
 
 class ClassicProps: XCTestCase {
     let epsilon:Float = 0.001
@@ -13,13 +14,6 @@ class ClassicProps: XCTestCase {
 
         super.tearDown()
     }
-
-    func inEpsilon(_ a: Float, _ b: Float, _ tolerance: Float = 0.001) ->
-            Bool {
-	    let delta = abs(tolerance)
-	    //return (a - delta) <= b && (a + delta) >= b
-	    return !((a + delta) < b) && !((b + delta) < a)
-	}
 
     func testPropFact() {
     	let funcs = [Classic.factLp, Classic.factI]
@@ -39,7 +33,7 @@ class ClassicProps: XCTestCase {
     			(b: Float, n: Float) in
         	let ans = powf(b, n)
 			return funcs.reduce(true) {acc, f in
-				acc && self.inEpsilon(ans, f(b, n), self.epsilon * ans)}
+				acc && Util.inEpsilon(ans, f(b, n), self.epsilon * ans)}
         }
     }
 }
