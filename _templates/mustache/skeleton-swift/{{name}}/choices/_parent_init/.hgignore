@@ -96,3 +96,5 @@ Packages/
 .build/
 Package.resolved
 # *.xcworkspace
+*/Makefile
+!Makefile

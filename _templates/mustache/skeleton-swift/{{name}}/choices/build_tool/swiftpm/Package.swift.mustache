@@ -1,12 +1,14 @@
-// swift-tools-version:4.2
+// swift-tools-version:5.5
 
 import PackageDescription
+import Foundation
 
 func targetDepn(_ name:String) -> Target.Dependency {
     //return Target.Dependency.target(name: name)
     return Target.Dependency(stringLiteral: name)
 }
 let (parent, mod) = ("{{parentcap}}{{^parentcap}}Introswift{{/parentcap}}", "{{projectcap}}{{^projectcap}}Util{{/projectcap}}")
+let prefix = ProcessInfo.processInfo.environment["PREFIX"] ?? "/usr/local"
 
 let package = Package(
     name: "\(parent)_\(mod)",
@@ -19,9 +21,13 @@ let package = Package(
     ],
     dependencies: [
         //.package(url: /* package url */, from: "1.0.0"),
+	    .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.0.0"),
+	    .package(url: "https://github.com/stackotter/swift-lint-plugin.git", from: "0.1.0"),
 	    .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.7.0"),{{#executable}}
-	    .package(url: "https://github.com/behrang/YamlSwift.git", from: "3.0.0"),{{/executable}}{{#executable}}
-	    .package(url: "https://github.com/jpsim/Yams.git", from: "0.3.6"),{{/executable}}
+	    .package(url: "https://github.com/jdfergason/swift-toml.git", from: "1.0.0"),
+	    .package(url: "https://github.com/behrang/YamlSwift.git", from: "3.0.0"),
+	    .package(url: "https://github.com/dduan/TOMLDecoder.git", from: "0.2.1"),
+	    .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.0"),{{/executable}}
 	    //.package(url: "../{{parent}}{{^parent}}introswift{{/parent}}_util", .branch("master")),
 	    //.package(path: "../{{parent}}{{^parent}}introswift{{/parent}}_util")
     ],
@@ -29,16 +35,26 @@ let package = Package(
         .target(
             name: "\(parent)_\(mod)"
             , dependencies: []
-            , path: "Sources/\(parent)/\(mod)"){{#executable}}
-        , .target(
+            , path: "Sources/\(parent)/\(mod)"
+        ){{#executable}}
+        , .executableTarget(
             name: "\(parent)_\(mod)Main"
-            , dependencies: ["Yaml", "Yams", targetDepn("\(parent)_\(mod)")]
-            , path: "Sources/\(parent)/Main"){{/executable}}
+            , dependencies: [.product(name: "Toml", package: "swift-toml"),
+                .product(name: "Yaml", package: "YamlSwift")
+                , "TOMLDecoder", "Yams"
+                //, targetDepn("\(parent)_Util")
+                , targetDepn("\(parent)_\(mod)")]
+            , path: "Sources/\(parent)/Main"
+            , linkerSettings: [.unsafeFlags(["-L\(prefix)/lib"
+            	, "-l\(parent)_\(mod)"])]
+        ){{/executable}}
         , .testTarget(
             name: "\(parent)_\(mod)Tests"
-            , dependencies: ["SwiftCheck", targetDepn("\(parent)_\(mod)")]
+            , dependencies: ["SwiftCheck"//, targetDepn("\(parent)_Util")
+                , targetDepn("\(parent)_\(mod)")]
             , path: "Tests/\(parent)/\(mod)Tests"
-            , exclude: ["ClassicCases.swift", "ClassicProps.swift"]
+            , linkerSettings: [.unsafeFlags(["-L\(prefix)/lib"
+            	, "-l\(parent)_\(mod)"])]
         )
     ]
 )

@@ -1,47 +1,30 @@
-BUILD_PATH ?= ./.build
-PREFIX ?= /usr/local
-
 # Single package Makefile script.
 .SUFFIXES: .s .o .a .swift
 help:
 
-parent = {{parentcap}}{{^parentcap}}Introswift{{/parentcap}}
-pkg = {{projectcap}}{{^projectcap}}Util{{/projectcap}}
-proj = $(parent)_$(pkg)
-
-version = {{version}}{{^version}}0.1.0{{/version}}
-ver_major = $(shell echo $(version) | cut -d'.' -f1)
-
-proj_dir = $(shell pwd)
-par_dir = $(shell dirname $(proj_dir))
 PKG_CONFIG = pkg-config --with-path=$(PREFIX)/lib/pkgconfig
-SWIFTCFLAGS = # -Xswiftc -DDEBUG -Xcc -I$(PREFIX)/include
-SWIFTLDFLAGS = # -Xlinker -L$(PREFIX)/lib -Xlinker -l$(parent)_Util
-COVERAGEFLAGS = # -Xswiftc -profile-generate -Xswiftc -profile-coverage-mapping -Xcc -fprofile-instr-generate -Xcc -fcoverage-mapping
 
-ifeq ($(shell sh -c 'uname -s 2>/dev/null || echo not'),Darwin)
-shlibext = dylib
-else
-shlibext = so
-endif
+pkg = {{projectcap}}{{^projectcap}}Util{{/projectcap}}
+parent = {{parentcap}}{{^parentcap}}Introswift{{/parentcap}}
+proj = $(parent)_$(pkg)
+namespace_path = $(shell echo $(parent) | sed 'y|.|/|')
+version = {{version}}{{^version}}0.1.0{{/version}}
+somajor = $(shell echo $(version) | cut -d'.' -f1)
+sominor = $(shell echo $(version) | cut -d'.' -f2)
 
-ifdef DEBUG
-CONFIG = debug
-SWIFTLDFLAGS := $(SWIFTLDFLAGS)
-SWIFTCFLAGS := $(SWIFTCFLAGS) -Xswiftc -DDEBUG
-COVERAGEFLAGS := $(COVERAGEFLAGS) -Xswiftc -profile-generate -Xswiftc -profile-coverage-mapping -Xcc -fprofile-instr-generate -Xcc -fcoverage-mapping
-else
-CONFIG = release
-SWIFTLDFLAGS := $(SWIFTLDFLAGS)
-SWIFTCFLAGS := $(SWIFTCFLAGS) -Xswiftc -DNDEBUG
-COVERAGEFLAGS := $(COVERAGEFLAGS)
-endif
+BUILD_PATH ?= $(shell pwd)/.build
+SWIFTCFLAGS := $(SWIFTCFLAGS) -Xswiftc -I$(PREFIX)/lib # -Xswiftc -DDEBUG
+SWIFTLDFLAGS := $(SWIFTLDFLAGS) -Xlinker -L$(PREFIX)/lib # -Xlinker -l$(parent)_Util
 
 build/.depend:
+	-@mkdir -p build/bin build/lib/pkgconfig build/share/doc/$(proj)
+	-@find src tests -type d -exec mkdir -p build/{} \;
+	-cp -fR include resources build/
+	-@rm -fr build/lib/pkgconfig/$(proj).pc
+	-sed "s|@prefix@|$(PREFIX)|" src/$(proj).pc.in > build/lib/pkgconfig/$(proj).pc
 	-@echo '' > build/.depend
 
 .PHONY: build testCompile{{#executable}} run debug valgrind{{/executable}}
-
 build: build/.depend ## compile
 	swift build -v --build-path $(BUILD_PATH) $(SWIFTCFLAGS) $(SWIFTLDFLAGS) $(COVERAGEFLAGS) -c $(CONFIG)
 testCompile: build/.depend ## compile test

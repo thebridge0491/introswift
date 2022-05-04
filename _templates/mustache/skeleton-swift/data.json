@@ -1,36 +1,36 @@
 {
+  "parentregex": "^[a-z][_a-z0-9]+$",
+  "projectregex": "^[a-z][a-z0-9]+$",
+  "separator": "_",
+  "joiner": "_",
   "groupid": false,
   "category": false,
   "parent": "introswift",
   "parentdescription": "Multi-package project Intro examples for Swift.",
   "project": "util",
-  "description": "Utilites sub-package for Swift Intro examples project.",
+  "description": "Utilities sub-package for Swift Intro examples project.",
   "version": "0.1.0",
-  "separator": "_",
-  "joiner": "_",
-  "parentregex": "^[a-z][_a-z0-9]+$",
-  "projectregex": "^[a-z][a-z0-9]+$",
-
+  
   "repohost": "bitbucket.org",
   "repoacct": "imcomputer",
-  "date": "2019-02-01",
-
+  "date": "2013-10-01",
+  
   "readmeext": ".rst",
   "license": "Apache-2.0",
   "buildtool": "swiftpm",
   "testfrwk": "xctest",
-
+  
   "ffilib": "none",
-
+  
   "skeletondir": "Templates/mustache/skeleton-swift",
-
+  
   "_choices": {
     "readmeext": [".rst", ".md", ".adoc"],
-    "license": ["Apache-2.0", "MIT", "BSD-3-Clause", "GPL-3.0+", "ISC",
+    "license": ["Apache-2.0", "MIT", "BSD-3-Clause", "GPL-3.0+", "ISC", 
       "Unlicense", "Not open source"],
     "buildtool": ["swiftpm"],
     "testfrwk": ["xctest"],
-    "executable": [false, "yes"],
+    "executable": ["no", "yes"],
     "ffilib": ["none", "native"]
   }
 }

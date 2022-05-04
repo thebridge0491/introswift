@@ -1,0 +1,40 @@
+# {{parentcap}}{{^parentcap}}Introswift{{/parentcap}}{{joiner}}{{^joiner}}_{{/joiner}}{{projectcap}}{{^projectcap}}Util{{/projectcap}}
+<!-- .md to .html: markdown foo.md > foo.html
+                   pandoc -s -f markdown_strict -t html5 -o foo.html foo.md -->
+
+{{description}}{{^description}}Utilities sub-package for Swift Intro examples project.{{/description}}
+
+## Installation
+source code tarball download:
+    
+        # [aria2c --check-certificate=false | wget --no-check-certificate | curl -kOL]
+        FETCHCMD='aria2c --check-certificate=false'
+        $FETCHCMD https://{{repohost}}{{^repohost}}bitbucket.org{{/repohost}}/{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}/{{parent}}{{^parent}}introswift{{/parent}}/[get | archive]/master.zip
+
+version control repository clone:
+        
+        git clone https://{{repohost}}{{^repohost}}bitbucket.org{{/repohost}}/{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}/{{parent}}{{^parent}}introswift{{/parent}}.git
+
+build example with swiftpm:
+cd <path> ; swift build [-Xlinker -L$PREFIX/lib] [-Xswiftc -I$(PREFIX)/lib]
+swift test [-Xlinker -L$PREFIX/lib]] [-Xswiftc -I$(PREFIX)/lib]
+
+## Usage
+{{#executable}}
+        [env RSRC_PATH=<path>/resources] [$PREFIX/bin/]{{parentcap}}{{^parentcap}}Introswift{{/parentcap}}{{joiner}}{{^joiner}}_{{/joiner}}{{projectcap}}{{^projectcap}}Util{{/projectcap}}Main [-h]
+{{/executable}}
+{{^executable}}
+        // PKG_CONFIG='pkg-config --with-path=$PREFIX/lib/pkgconfig'
+        // $PKG_CONFIG --cflags --libs <ffi-lib>
+
+        import class {{parentcap}}{{^parentcap}}Introswift{{/parentcap}}{{joiner}}{{^joiner}}_{{/joiner}}{{projectcap}}{{^projectcap}}Util{{/projectcap}}.{{projectcap}}{{^projectcap}}Util{{/projectcap}}
+        ...
+        let arr1:[Int] = [0, 1, 2], arr2:[Int] = [10, 20, 30]
+        let prodArr = {{projectcap}}{{^projectcap}}Util{{/projectcap}}.cartesianProd(arr1, arr2)
+{{/executable}}
+
+## Author/Copyright
+Copyright (c) {{year}}{{^year}}2019{{/year}} by {{author}}{{^author}}{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}{{/author}} <{{email}}{{^email}}{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}-codelab@yahoo.com{{/email}}>
+
+## License
+Licensed under the {{license}}{{^license}}Apache-2.0{{/license}} License. See LICENSE for details.
