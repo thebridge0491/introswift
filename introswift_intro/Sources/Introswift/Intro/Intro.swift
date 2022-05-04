@@ -21,7 +21,7 @@ public class Intro {
             Thread.sleep(forTimeInterval:(Double(secs)))
             print("Type any character when ready: ", terminator:"")
             let str = readLine()!
-            ch = str.isEmpty ? "\0" : str.characters.first!
+            ch = str.isEmpty ? "\0" : str.first!
 
             if "\n" != ch && "\0" != ch {
                 break

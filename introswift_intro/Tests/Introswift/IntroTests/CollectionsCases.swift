@@ -22,7 +22,7 @@ class CollectionsCases: XCTestCase {
         arr1.append(contentsOf: longArr)
         XCTAssertEqual(longArr.count, arr1.count, "length")
         XCTAssertEqual(longArr[0], arr1[0], "first")
-        XCTAssertEqual(1, arr1.index(of: longArr[1]), "indexOf")
+        XCTAssertEqual(1, arr1.firstIndex(of: longArr[1]), "indexOf")
         arr1.append(contentsOf: nines)
         XCTAssertEqual(longArr.count + nines.count, arr1.count, "append")
         let res = arr1.sorted()

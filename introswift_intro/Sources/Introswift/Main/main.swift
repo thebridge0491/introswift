@@ -1,6 +1,8 @@
 import Foundation
 
-import Yaml
+//import Toml
+//import Yaml
+import TOMLDecoder
 import Yams
 
 import class Introswift_Util.Util
@@ -24,6 +26,19 @@ typealias uchar_t = UInt8
 
 enum ConstItems: Int {
     case ZERO, NUMZ = 26
+}
+
+func deserializeStr(_ dataStr:String?, _ dataFmt:String) -> Dictionary<String, Any> {
+    var blankDict:[String: Any] = ["fmt": dataFmt]
+    
+    if "yaml" == dataFmt || "json" == dataFmt {
+        blankDict.merge(try! Yams.load(yaml: dataStr ?? "") as! [String: Any]) { (_, new) in new }
+    } else if "toml" == dataFmt {
+        blankDict.merge(try! TOMLDecoder.tomlTable(from: dataStr ?? "")) { (_, new) in new }
+    } /*else if "json" == dataFmt {
+        blankDict.merge(try! Util.readJSONObject(dataStr ?? "{}") as! [String: Any]) { (_, new) in new }
+    }*/
+    return blankDict
 }
 
 /** Run method.
@@ -180,30 +195,39 @@ public func main() {
 	let rsrcPath = ProcessInfo.processInfo.environment["RSRC_PATH"] ?? "Resources"
     let options = parseCmdopts(argv)
     var tupArr:[[String]] = []
-
-    if let jsonDict = try! Util.readJSONObject(
-			Util.getTextFmFile("\(rsrcPath)/prac.json") ?? "{}") as? [String: Any] {
-		var user1Dict = jsonDict["user1", default:["name": "???"]] as! [String: Any?]
-		tupArr += [["\(jsonDict)"
-		    , "\(jsonDict["domain", default:"???"] as! String)",
-			"\(user1Dict["name"] as! String)"]]
-	}
-
-	/*if let yamlDict = try? Yaml.load(
-			Util.getTextFmFile("\(rsrcPath)/prac.yaml") ?? "") {
-	    var user1Dict = yamlDict["user1"] ?? ["name": "???"]
-	    tupArr += [["\(yamlDict.dictionary ?? [:])"
-	        , "\(nil != yamlDict.dictionary ? yamlDict["domain"].string! : "???")",
-			"\(nil != user1Dict.dictionary ? user1Dict["name"].string! : "???")"]]
-	}
-	if let yamlDict1 = try! Yams.load(yaml:
-			Util.getTextFmFile("\(rsrcPath)/prac.yaml") ?? "") as? [String: Any] {
-	    var user1Dict = yamlDict1["user1", default:["name": "???"]] as! [String: Any?]
-	    tupArr += [["\(yamlDict1)"
-	        , "\(yamlDict1["domain", default:"???"] as! String)",
-			"\(user1Dict["name"] as! String)"]]
-	}*/
-
+    
+    let jsonStr = Util.getTextFmFile("\(rsrcPath)/prac.json")
+	let jsonObj = deserializeStr(jsonStr, "json")
+	let jsonUser1Dict = jsonObj["user1", default:["name": "???"]] as! [String: Any?]
+	
+    /*let tomlStr = Util.getTextFmFile("\(rsrcPath)/prac.toml")
+	let tomlObj = deserializeStr(tomlStr, "toml")
+	let tomlUser1Dict = tomlObj["user1", default:["name": "???"]] as! [String: Any?]
+	//if let tomlObj0 = try? Toml(withString: tomlStr ?? "") {
+	//    var user1Dict = try? tomlObj0.value("user1") ?? ["name": "???"]
+	//    tupArr += [["\(tomlObj0)"
+	//        , "\(nil != tomlObj0 ? tomlObj0.string("domain") : "???")",
+	//		"\(nil != user1Dict ? user1Dict?["name"]! : "???")"]]
+	//}*/
+    
+    /*let yamlStr = Util.getTextFmFile("\(rsrcPath)/prac.yaml")
+	let yamlObj = deserializeStr(yamlStr, "yaml")
+	let yamlUser1Dict = yamlObj["user1", default:["name": "???"]] as! [String: Any?]
+	//if let yamlObj0 = try? Yaml.load(yamlStr ?? "") {
+	//    var user1Dict = yamlObj0["user1"] ?? ["name": "???"]
+	//    tupArr += [["\(yamlObj0.dictionary ?? [:])"
+	//        , "\(nil != yamlObj0.dictionary ? yamlObj0["domain"].string! : "???")",
+	//		"\(nil != user1Dict.dictionary ? user1Dict["name"].string! : "???")"]]
+	//}*/
+	
+    tupArr += [
+        ["\(jsonObj)", "\(jsonObj["domain", default:"???"] as! String)"
+        , "\(jsonUser1Dict["name"] as! String)"]
+		//, ["\(tomlObj)", "\(tomlObj["domain", default:"???"] as! String)"
+		//, "\(tomlUser1Dict["name"] as! String)"]
+		//, ["\(yamlObj)", "\(yamlObj["domain", default:"???"] as! String)"
+		//, "\(yamlUser1Dict["name"] as! String)"]
+	]
 	for elem in tupArr {
 		print("\nconfig: \(elem[0])")
 		print("domain: \(elem[1])")

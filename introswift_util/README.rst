@@ -3,7 +3,7 @@ Introswift_Util
 .. .rst to .html: rst2html5 foo.rst > foo.html
 ..                pandoc -s -f rst -t html5 -o foo.html foo.rst
 
-Utilites sub-package for Swift Intro examples project.
+Utilities sub-package for Swift Intro examples project.
 
 Installation
 ------------
@@ -20,9 +20,9 @@ version control repository clone:
         git clone https://bitbucket.org/thebridge0491/introswift.git
 
 build example with swiftpm:
-cd <path> ; swift build [--package-path ??] [-Xlinker -L$PREFIX/lib]
+cd <path> ; swift build [-Xlinker -L$PREFIX/lib] [-Xswiftc -I$(PREFIX)/lib]
 
-[swift test [--package-path ??] [-Xlinker -L$PREFIX/lib]]
+swift test [-Xlinker -L$PREFIX/lib]] [-Xswiftc -I$(PREFIX)/lib]
 
 Usage
 -----

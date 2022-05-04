@@ -17,27 +17,39 @@ class SequenceopsProps: XCTestCase {
     }
 
     func testPropFindIndex() {
-    	let funcs:[(Int, [Int]) -> Int?] = [Sequenceops.findIndexLp]
-    	property("prop findIndex(el, xs) == xs.index(el)") <- forAll {
-    			(data: Int, ys: [Int]) in
-        	let xs = Array(ys)
-        	let ans = xs.index(of: data)
-        	return funcs.reduce(true) {acc, f in acc && ans == f(data, xs)}
+        let funcs:[(Int, [Int]) -> Int?] = [Sequenceops.findIndexLp]
+        property("prop findIndex(el, xs) == xs.index(el)") <- forAll {
+                (data: Int, ys: [Int]) in
+            let xs = Array(ys)
+            let ans = xs.firstIndex(of: data)
+            return funcs.reduce(true) {acc, f in acc && ans == f(data, xs)}
         }
     }
 
     func testPropReverse() {
-    	let fnMutImm:[((inout [Int]) -> Void, ([Int]) -> [Int])] = [
-    		(Sequenceops.reverseLp, Sequenceops.reverseI)]
-    	property("prop reverse(xs) == xs.reversed()") <- forAll {
-    			(ys: [Int]) in
-        	let xs = Array(ys)
-        	let ans: [Int] = xs.reversed()
-        	return fnMutImm.reduce(true) {acc, fnMut_fnImm in
-        		let (fnMut, fnImm) = (fnMut_fnImm.0, fnMut_fnImm.1)
-        		var tmp = Array(xs)
-        		fnMut(&tmp)
-        		return acc && ans == tmp && ans == fnImm(xs)}
+        /*let fnMutImm:[((inout [Int]) -> Void, ([Int]) -> [Int])] = [
+            (Sequenceops.reverseLp, Sequenceops.reverseI)]
+        property("prop reverse(xs) == xs.reversed()") <- forAll {
+                (ys: [Int]) in
+            let xs = Array(ys)
+            let ans: [Int] = xs.reversed()
+            return fnMutImm.reduce(true) {acc, fnMut_fnImm in
+                let (fnMut, fnImm) = (fnMut_fnImm.0, fnMut_fnImm.1)
+                var tmp = Array(xs)
+                fnMut(&tmp)
+                return acc && ans == tmp && ans == fnImm(xs)}
+        }*/
+        let fnMut:[(inout [Int]) -> Void] = [Sequenceops.reverseLp]
+        let fnImm:[([Int]) -> [Int]] = [Sequenceops.reverseI]
+        property("prop reverse(xs) == xs.reversed()") <- forAll {
+                (ys: [Int]) in
+            let xs = Array(ys)
+            let ans: [Int] = xs.reversed()
+            return fnMut.reduce(true) {acc, f in
+                var tmp = Array(xs)
+                f(&tmp)
+                return acc && ans == tmp}
+            && fnImm.reduce(true) {acc, f in acc && ans == f(xs)}
         }
     }
 }

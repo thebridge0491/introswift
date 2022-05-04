@@ -19,9 +19,9 @@ class SequenceopsCases: XCTestCase {
         let funcs:[(Int, [Int]) -> Int?] = [Sequenceops.findIndexLp]
         let el = 3
         for f in funcs {
-            XCTAssertEqual(arrInts.index(of: el), f(el, arrInts))
+            XCTAssertEqual(arrInts.firstIndex(of: el), f(el, arrInts))
             XCTAssertEqual(Int?(4), f(el, arrInts))
-            XCTAssertEqual(arrIntsRev.index(of: el), f(el, arrIntsRev))
+            XCTAssertEqual(arrIntsRev.firstIndex(of: el), f(el, arrIntsRev))
             XCTAssertEqual(Int?(0), f(el, arrIntsRev))
         }
     }

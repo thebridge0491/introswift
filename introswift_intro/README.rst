@@ -20,9 +20,9 @@ version control repository clone:
         git clone https://bitbucket.org/thebridge0491/introswift.git
 
 build example with swiftpm:
-cd <path> ; swift build [--package-path ??] [-Xlinker -L$PREFIX/lib]
+cd <path> ; swift build [-Xlinker -L$PREFIX/lib] [-Xswiftc -I$(PREFIX)/lib]
 
-[swift test [--package-path ??] [-Xlinker -L$PREFIX/lib]]
+swift test [-Xlinker -L$PREFIX/lib] [-Xswiftc -I$(PREFIX)/lib]
 
 Usage
 -----
